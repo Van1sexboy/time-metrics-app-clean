@@ -18,10 +18,17 @@ jobs:
           python3 --version
           python3 -m pip --version
 
+      - name: Create virtual environment
+        run: |
+          python3 -m venv .venv
+
       - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Run tests
-        run: PYTHONPATH=. python3 -m pytest -q
+        run: |
+          . .venv/bin/activate
+          PYTHONPATH=. python -m pytest -q
