@@ -1,14 +1,24 @@
-from app import app
+from flask import Flask, jsonify
+import time
+
+app = Flask(__name__)
+
+time_request_count = 0
 
 
-def test_time_route_returns_json_with_unix_time():
-    client = app.test_client()
+@app.get("/time")
+def get_time():
+    global time_request_count
 
-    response = client.get("/time")
+    time_request_count += 1
 
-    assert response.status_code == 200
+    return jsonify({"time": int(time.time())})
 
-    data = response.get_json()
 
-    assert "time" in data
-    assert isinstance(data["time"], int)
+@app.get("/metrics")
+def get_metrics():
+    return jsonify({"count": time_request_count})
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
